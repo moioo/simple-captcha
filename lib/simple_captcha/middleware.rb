@@ -25,6 +25,7 @@ module SimpleCaptcha
       def make_image(env, headers = {}, status = 404)
         request = Rack::Request.new(env)
         code = request.params["code"]
+        gen  = request.params["gen"]
         body = []
         
         if !code.blank? && Utils::simple_captcha_value(code)
@@ -32,7 +33,7 @@ module SimpleCaptcha
           #status = 200
           #body = generate_simple_captcha_image(code)
           #headers['Content-Type'] = 'image/jpeg'
-          
+          Utils::set_simple_captcha_data(code) if gen == 'true'
           return send_file(generate_simple_captcha_image(code), :type => 'image/jpeg', :disposition => 'inline', :filename =>  'simple_captcha.jpg')
         end
         

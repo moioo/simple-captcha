@@ -52,7 +52,7 @@ module SimpleCaptcha #:nodoc
          :field => simple_captcha_field(options)
          }
          
-      render :partial => 'simple_captcha/simple_captcha', :locals => { :simple_captcha_options => defaults }
+      render :partial => "simple_captcha/simple_captcha#{options[:tpl]}", :locals => { :simple_captcha_options => defaults }
     end
 
     private
