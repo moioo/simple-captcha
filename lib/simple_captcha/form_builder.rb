@@ -5,8 +5,7 @@ module SimpleCaptcha
       base.send(:include, SimpleCaptcha::FormBuilder::ClassMethods)
       base.send(:include, ActionView::Helpers)
       if defined? Sprokets
-        base.send(:include, Sprockets::Helpers::RailsHelper)
-        base.send(:include, Sprockets::Helpers::IsolatedHelper)
+        base.send(:include, Sprockets::Rails::Helper)
       end
       
       base.delegate :render, :session, :to => :template
