@@ -4,14 +4,14 @@ module SimpleCaptcha #:nodoc
 
     mattr_accessor :image_styles
     @@image_styles = {
-      'embosed_silver'  => ['-fill darkblue', '-shade 20x60', '-background white'],
-      'simply_red'      => ['-fill darkred', '-background white'],
-      'simply_green'    => ['-fill darkgreen', '-background white'],
-      'simply_blue'     => ['-fill darkblue', '-background white'],
-      'distorted_black' => ['-fill darkblue', '-edge 10', '-background white'],
-      'all_black'       => ['-fill darkblue', '-edge 2', '-background white'],
-      'charcoal_grey'   => ['-fill darkblue', '-charcoal 5', '-background white'],
-      'almost_invisible' => ['-fill red', '-solarize 50', '-background white']
+      'embosed_silver'  =>  ['-background white', '-fill darkblue', '-shade 20x60'],
+      'simply_red'      =>  ['-background white', '-fill darkred'],
+      'simply_green'    =>  ['-background white', '-fill darkgreen'],
+      'simply_blue'     =>  ['-background white', '-fill darkblue'],
+      'distorted_black' =>  ['-background white', '-fill darkblue', '-edge 10'],
+      'all_black'       =>  ['-background white', '-fill darkblue', '-edge 2'],
+      'charcoal_grey'   =>  ['-background white', '-fill darkblue', '-charcoal 5'],
+      'almost_invisible' => ['-background white', '-fill red', '-solarize 50',]
     }
 
     DISTORTIONS = ['low', 'medium', 'high']
@@ -60,8 +60,8 @@ module SimpleCaptcha #:nodoc
       def generate_simple_captcha_image(simple_captcha_key) #:nodoc
         amplitude, frequency = ImageHelpers.distortion(SimpleCaptcha.distortion)
         text = Utils::simple_captcha_value(simple_captcha_key)
-
-        params = ImageHelpers.image_params(SimpleCaptcha.image_style).dup
+        image_style = SimpleCaptcha.image_style
+        params = ImageHelpers.image_params(image_style).dup
         params << "-size #{SimpleCaptcha.image_size}"
         params << "-wave #{amplitude}x#{frequency}"
         #params << "-gravity 'Center'"
@@ -74,7 +74,7 @@ module SimpleCaptcha #:nodoc
 
         #params << "label:#{text} '#{File.expand_path(dst.path)}'"
         params << "label:#{text} \"#{File.expand_path(dst.path)}\""
-
+        Rails.logger.info(['captcha:', 'convert', params.join(' ')].join(' '))
         SimpleCaptcha::Utils::run("convert", params.join(' '))
 
         dst.close
